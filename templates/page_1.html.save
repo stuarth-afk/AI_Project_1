@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Bot 1</title>
+</head>
+<body>
+<h2>Development AI Bot 1</h2>
+<a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
+<p>Bot Version 0.1<p>
+<form action="/page_1" method="post">
+  <label for="text">Enter Text:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
+  <input type="submit" value="Submit">
+</form>
+
+<p>AI Bot Response: {{ response }}</p>
+
+</body>
+</html>

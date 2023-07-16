@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Bot</title>
+  <style>
+      input[type=text], textarea {
+          width: 100%;
+          padding: 15px;
+          margin: 5px 0 22px 0;
+          display: inline-block;
+          border: none;
+          background: #f1f1f1;
+      }
+
+      button {
+          background-color: #808080;
+          color: white;
+          padding: 10px 15px;
+          margin: 8px 0;
+          border: none;
+          cursor: pointer;
+          width: auto;
+          opacity: 0.9;
+          float: left;
+      }
+
+      /* Clear floats */
+      .clearfix::after{
+          content: "";
+          clear: both;
+          display: table;
+      }
+  </style>
+
+</head>
+<body>
+<h2>Bot Input Message<h2>
+<a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
+<p>This is the text that will be sent to the AI Foundational Model<p>
+<form action="/page_1" method="post" class="clearfix">
+  <label for="text">Enter Text:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
+  <input type="submit" value="Submit">
+</form>
+
+<h2>Bot Output  Message</h2>
+<p>This is the output text that will be sent to the destination<p>
+<p>AI Bot Response: {{ response }}</p>
+
+
+<h2>Bot Configuration</h2>
+
+    <form action="/submit_config" method="post" class="clearfix">
+        <label for="bot_name"><b>Bot Name</b></label>
+        <input type="text" name="bot_name" required>
+
+        <label for="bot_id"><b>Bot ID</b></label>
+        <input type="text" name="bot_id" required>
+
+        <label for="bot_model"><b>Bot Model</b></label>
+        <input type="text" name="bot_model" required>
+
+        <label for="bot_objective"><b>Bot Objective</b></label>
+        <input type="text" name="bot_objective" required>
+
+        <label for="system_prompt"><b>System Prompt</b></label>
+        <input type="text" name="system_prompt" required>
+
+        <label for="db_read_script"><b>Database Read Script</b></label>
+        <textarea name="db_read_script" required></textarea>
+
+        <label for="db_write_script"><b>Database Write Script</b></label>
+        <textarea name="db_write_script" required></textarea>
+
+        <label for="ref_file_list"><b>Reference File List</b></label>
+        <input type="text" name="ref_file_list" required>
+
+        <label for="output_destination"><b>Output Destination</b></label>
+        <input type="text" name="output_destination" required>
+
+        <button type="submit">Submit Configuration</button>
+    </form>
+
+</body>
+</html>

@@ -16,5 +16,32 @@
 
 <p>AI Bot Response: {{ response }}</p>
 
+
+<form action="/submit_config" method="post">
+  <label for="bot_name">Bot Name:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ bot_name }}</textarea><br>
+  
+  <label for="ai_model">AI Model:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ ai_model }}</textarea><br>
+  
+  <label for="system_prompt">System Prompt:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ system_prompt }}</textarea><br>
+  
+  <label for="db_read_script">Database Read Script:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ db_read_script }}</textarea><br>
+  
+  <label for="db_write_script">Database Write Script:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ db_write_script }}</textarea><br>
+  
+  <label for="references">References:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ references }}</textarea><br>
+  
+  <label for="output_destination">Output Message Destination:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ output_destination }}</textarea><br>
+
+  <input type="submit" value="Submit Configuration">
+</form>
+
+  
 </body>
 </html>

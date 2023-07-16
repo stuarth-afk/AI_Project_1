@@ -13,9 +13,9 @@
   <input type="submit" value="Submit">
 </form>
 
-<p>AI Bot Response: {{ response }}</p><br><br>
+<p>AI Bot Response: {{ response }}</p><br><br><br><br>
 
-
+<h2>Configuration</h2>
 <form action="/submit_config" method="post">
   <label for="bot_name">Bot Name:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ bot_name }}</textarea><br>

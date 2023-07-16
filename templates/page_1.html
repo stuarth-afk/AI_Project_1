@@ -2,42 +2,12 @@
 <html>
 <head>
   <title>AI Bot</title>
-  <style>
-      input[type=text], textarea {
-          width: 100%;
-          padding: 15px;
-          margin: 5px 0 22px 0;
-          display: inline-block;
-          border: none;
-          background: #f1f1f1;
-      }
-
-      button {
-          background-color: #808080;
-          color: white;
-          padding: 10px 15px;
-          margin: 8px 0;
-          border: none;
-          cursor: pointer;
-          width: auto;
-          opacity: 0.9;
-          float: left;
-      }
-
-      /* Clear floats */
-      .clearfix::after{
-          content: "";
-          clear: both;
-          display: table;
-      }
-  </style>
-
 </head>
 <body>
 <h2>Bot Input Message<h2>
 <a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
 <p>This is the text that will be sent to the AI Foundational Model<p>
-<form action="/page_1" method="post" class="clearfix">
+<form action="/page_1" method="post">
   <label for="text">Enter Text:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
   <input type="submit" value="Submit">
@@ -50,7 +20,7 @@
 
 <h2>Bot Configuration</h2>
 
-    <form action="/submit_config" method="post" class="clearfix">
+    <form action="/submit_config" method="post">
         <label for="bot_name"><b>Bot Name</b></label>
         <input type="text" name="bot_name" required>
 

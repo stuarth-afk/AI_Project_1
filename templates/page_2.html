@@ -7,14 +7,14 @@
 <h2>Development AI Bot 2</h2>
 <a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
 <a href="{{ url_for('page_1') }}"><button>Bot 1</button></a>
-<p>This is a development bot that will build rapport using NLP Principles.<p>
+<p>This bot is beta version 0.1<p>
 <form action="/page_2" method="post">
   <label for="text">Enter Text:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
   <input type="submit" value="Submit">
 </form>
 
-<p>AI Bot Response: {{ response }}</p>
+<p>AI Bot Response: {{ response }}</p><br><br>
 
 
 <form action="/submit_config" method="post">

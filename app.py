@@ -2,9 +2,32 @@ import os
 import openai
 import json
 from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+class Bot(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    number = db.Column(db.String(80))
+    role = db.Column(db.String(255))
+    input_source = db.Column(db.String(255))
+    output = db.Column(db.String(255))
+
+    def __init__(self, name, number, role, input_source, output):
+        self.name = name
+        self.number = number
+        self.role = role
+        self.input_source = input_source
+        self.output = output
+
 
 @app.route('/')
 def index():
@@ -15,13 +38,19 @@ def index():
 ####################################
 @app.route('/page_1', methods=['GET', 'POST'])
 def page_1():
-    bot_name = "NLP Classification Bot"
-    bot_number = "1"
-    bot_role = "Classify NLP content of user message"
-    bot_input_source = "user text input"
-    bot_output = "display text on web page"
+    bot = Bot.query.filter_by(number="1").first()
     user_text = ""
     response = ""
+    
+    #bot_name = "NLP Classification Bot"
+    #bot_number = "1"
+    #bot_role = "Classify NLP content of user message"
+    #bot_input_source = "user text input"
+    #bot_output = "display text on web page"
+    
+    user_text = ""
+    response = ""
+    
     if request.method == 'POST':
         user_text = request.form.get('text')
         # Add any processing of the user text you want here
@@ -29,7 +58,7 @@ def page_1():
             model="text-davinci-003",
             prompt=generate_prompt_1(user_text),
             temperature=0.6,
-            max_tokens=500,
+            max_tokens=1000,
         )
         user_text = ""  # Clear user_text after form submission
         response=response.choices[0].text

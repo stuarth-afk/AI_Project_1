@@ -7,7 +7,8 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@localhost/dbname'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)

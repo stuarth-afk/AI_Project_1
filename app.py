@@ -92,21 +92,13 @@ def page_1():
     cur.execute("SELECT * FROM Bot ORDER BY id DESC LIMIT 1")
     bot = cur.fetchone()
     cur.close()
-    
-    bot = Bot.get_bot_by_number("1")
-    #bot = Bot.query.filter_by(number="1").first()
+
+    if not bot:
+        bot = Bot.get_bot_by_number("1")
+
     user_text = ""
     response = ""
-    
-    #bot_name = "NLP Classification Bot"
-    #bot_number = "1"
-    #bot_role = "Classify NLP content of user message"
-    #bot_input_source = "user text input"
-    #bot_output = "display text on web page"
-    
-    user_text = ""
-    response = ""
-    
+
     if request.method == 'POST':
         user_text = request.form.get('text')
         # Add any processing of the user text you want here
@@ -116,8 +108,7 @@ def page_1():
             temperature=0.6,
             max_tokens=1000,
         )
-        user_text = ""  # Clear user_text after form submission
-        response=response.choices[0].text
+        response=response.choices[0].text.strip()
     return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
     
 def generate_prompt_1(user_text):

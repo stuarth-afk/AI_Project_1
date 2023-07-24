@@ -7,6 +7,9 @@ import yaml
 #from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+app = Flask(__name__)
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
 
 app.config['MYSQL_HOST'] = db_config['mysql_host']
@@ -16,8 +19,7 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:your_new_password@localhost/db1'
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

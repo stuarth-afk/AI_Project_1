@@ -4,6 +4,10 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import yaml
+import os
+import secrets
+
+app.secret_key = secrets.token_bytes(16) # <- random key , only used for cookie detection
 
 
 app = Flask(__name__)

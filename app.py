@@ -2,32 +2,50 @@ import os
 import openai
 import json
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask_mysqldb import MySQL
+import yaml
+#from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+
+db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
+
+app.config['MYSQL_HOST'] = db_config['mysql_host']
+app.config['MYSQL_USER'] = db_config['mysql_user']
+app.config['MYSQL_PASSWORD'] = db_config['mysql_password']
+app.config['MYSQL_DB'] = db_config['mysql_db']
+
+mysql = MySQL(app)
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:your_new_password@localhost/db1'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:your_new_password@localhost/db1'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-class Bot(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    number = db.Column(db.String(80))
-    role = db.Column(db.String(255))
-    input_source = db.Column(db.String(255))
-    output = db.Column(db.String(255))
-
-    def __init__(self, name, number, role, input_source, output):
+class Bot:
+    def __init__(self, id, name, number, role, input_source, output):
+        self.id = id
         self.name = name
         self.number = number
         self.role = role
         self.input_source = input_source
         self.output = output
+
+    @staticmethod
+    def get_bot_by_number(number):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM Bot WHERE number = %s", [number])
+        result = cur.fetchone()
+
+        if result:
+            bot = Bot(*result)
+            return bot
+
+        return None
+
 
 
 @app.route('/')
@@ -39,7 +57,8 @@ def index():
 ####################################
 @app.route('/page_1', methods=['GET', 'POST'])
 def page_1():
-    bot = Bot.query.filter_by(number="1").first()
+    bot = Bot.get_bot_by_number("1")
+    #bot = Bot.query.filter_by(number="1").first()
     user_text = ""
     response = ""
     

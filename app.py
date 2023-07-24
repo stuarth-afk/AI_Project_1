@@ -21,7 +21,7 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 mysql = MySQL(app)
 
 # Additional Bot model fields
-bot_fields = ['bot_name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination']
+bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination']
 
 
 class Bot:

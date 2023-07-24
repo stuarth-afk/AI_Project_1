@@ -102,13 +102,13 @@ def page_1():
     #bot = Bot(*bot_data) if bot_data else None
     if not bot:
         bot = Bot.get_bot_by_number("1")
-    print(f"Bot at 104 with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
+    #print(f"Bot at 104 with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
     #print(f"Bot at line 103: {bot.__dict__}")
     
     user_text = ""
     response = ""
     
-    print(f"Bot at 110 with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
+    #print(f"Bot at 110 with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
     #print(f"Bot at line 108: {bot.__dict__}")
     
     if request.method == 'POST':

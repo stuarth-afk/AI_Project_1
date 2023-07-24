@@ -96,8 +96,8 @@ def page_1():
     if not bot:
         bot = Bot.get_bot_by_number("1")
 
-    #user_text = ""
-    #response = ""
+    user_text = ""
+    response = ""
 
     if request.method == 'POST':
         user_text = request.form.get('text')

@@ -7,10 +7,10 @@ import yaml
 import os
 import secrets
 
-app.secret_key = secrets.token_bytes(16) # <- random key , only used for cookie detection
-
 
 app = Flask(__name__)
+app.secret_key = secrets.token_bytes(16) # <- random key , only used for cookie detection
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load YAML settings file

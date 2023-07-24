@@ -4,8 +4,7 @@ import json
 from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 import yaml
-#from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -19,13 +18,6 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ubuntu@localhost/dbname'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:your_new_password@localhost/db1'
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-#db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 class Bot:
     def __init__(self, id, name, number, role, input_source, output):

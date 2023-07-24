@@ -30,6 +30,7 @@ bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_s
 
 class Bot:
     def __init__(self, id, name, number, role, input_source, output):
+        print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
         self.id = id
         self.name = name
         self.number = number
@@ -39,12 +40,15 @@ class Bot:
 
     @staticmethod
     def get_bot_by_number(number):
+        print(f"Getting bot with number: {number}")
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM Bot WHERE number = %s", [number])
         result = cur.fetchone()
+        print(f"SQL Query Result: {result}")
 
         if result:
             bot = Bot(*result)
+            print(f"Bot created: {bot.__dict__}")
             return bot
 
         return None
@@ -96,10 +100,13 @@ def page_1():
     #bot = Bot(*bot_data) if bot_data else None
     if not bot:
         bot = Bot.get_bot_by_number("1")
-
+    print(f"Bot at line 103: {bot.__dict__}")
+    
     user_text = ""
     response = ""
-
+    
+    print(f"Bot at line 108: {bot.__dict__}")
+    
     if request.method == 'POST':
         user_text = request.form.get('text')
         # Add any processing of the user text you want here

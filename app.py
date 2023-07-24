@@ -1,7 +1,7 @@
 import os
 import openai
 import json
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import yaml
 
@@ -9,7 +9,9 @@ import yaml
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
+# Load YAML settings file
+db_config = yaml.load(open('db.yaml'))
+#db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
 
 app.config['MYSQL_HOST'] = db_config['mysql_host']
 app.config['MYSQL_USER'] = db_config['mysql_user']
@@ -17,6 +19,9 @@ app.config['MYSQL_PASSWORD'] = db_config['mysql_password']
 app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
+
+# Additional Bot model fields
+bot_fields = ['bot_name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'references', 'output_destination']
 
 
 class Bot:
@@ -49,8 +54,41 @@ def index():
 ####################################
 ####           Bot 1            ####
 ####################################
+@app.route('/submit_config', methods=['POST'])
+def submit_config():
+    # Get form data
+    data = {field: request.form.get(field) for field in bot_fields}
+
+    # Create MySQL cursor
+    cur = mysql.connection.cursor()
+
+    # Prepare SQL query
+    placeholders = ', '.join(['%s'] * len(data))
+    columns = ', '.join(data.keys())
+    sql = "INSERT INTO Bot (%s) VALUES (%s)" % (columns, placeholders)
+
+    # Execute SQL query
+    cur.execute(sql, list(data.values()))
+
+    # Commit the transaction
+    mysql.connection.commit()
+
+    # Close the cursor
+    cur.close()
+
+    # Flash a success message
+    flash("Configuration submitted successfully!", 'success')
+
+    # Redirect to the page_1
+    return redirect(url_for('page_1'))
+    
 @app.route('/page_1', methods=['GET', 'POST'])
 def page_1():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Bot ORDER BY id DESC LIMIT 1")
+    bot = cur.fetchone()
+    cur.close()
+    
     bot = Bot.get_bot_by_number("1")
     #bot = Bot.query.filter_by(number="1").first()
     user_text = ""
@@ -76,8 +114,8 @@ def page_1():
         )
         user_text = ""  # Clear user_text after form submission
         response=response.choices[0].text
-    return render_template('page_1.html', user_text=user_text, response=response)
-
+    return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
+    
 def generate_prompt_1(user_text):
     return """Identify the Neurolinguistic Programming meta program in the message.
 

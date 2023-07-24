@@ -30,13 +30,18 @@ bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_s
 
 class Bot:
     def __init__(self, id, name, number, role, input_source, output):
-        print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
         self.id = id
         self.name = name
         self.number = number
         self.role = role
         self.input_source = input_source
         self.output = output
+        self.ai_model = ai_model
+        self.system_prompt = system_prompt
+        self.db_read_script = db_read_script
+        self.db_write_script = db_write_script
+        self.reference_data = reference_data
+        print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
 
     @staticmethod
     def get_bot_by_number(number):
@@ -96,12 +101,15 @@ def submit_config():
 def page_1():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM Bot ORDER BY id DESC LIMIT 1")
-    bot = cur.fetchone()
+    bot_data = cur.fetchone()
     cur.close()
 
     #bot = Bot(*bot_data) if bot_data else None
-    if not bot:
+    if bot_data:
+        bot = Bot(*bot_data)
+    else:
         bot = Bot.get_bot_by_number("1")
+    
     #print(f"Bot at 104 with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
     #print(f"Bot at line 103: {bot.__dict__}")
     

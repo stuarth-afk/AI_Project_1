@@ -18,25 +18,25 @@
 <h2>Configuration</h2>
 <form action="/submit_config" method="post">
   <label for="name">Bot Name:</label><br>
-  <textarea id="name" name="name" style="width: 500px; height: 25px;">{{ bot.name }}</textarea><br>
+  <textarea id="name" name="name" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.name }}</textarea><br>
   
   <label for="ai_model">AI Model:</label><br>
-  <textarea id="ai_model" name="ai_model" style="width: 500px; height: 25px;">{{ bot.ai_model }}</textarea><br>
+  <textarea id="ai_model" name="ai_model" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.ai_model }}</textarea><br>
   
   <label for="system_prompt">System Prompt:</label><br>
-  <textarea id="system_prompt" name="system_prompt" style="width: 500px; height: 25px;">{{ bot.system_prompt }}</textarea><br>
+  <textarea id="system_prompt" name="system_prompt" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.system_prompt }}</textarea><br>
   
   <label for="db_read_script">Database Read Script:</label><br>
-  <textarea id="db_read_script" name="db_read_script" style="width: 500px; height: 100px;">{{ bot.db_read_script }}</textarea><br>
+  <textarea id="db_read_script" name="db_read_script" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_read_script }}</textarea><br>
   
   <label for="db_write_script">Database Write Script:</label><br>
-  <textarea id="db_write_script" name="db_write_script" style="width: 500px; height: 100px;">{{ bot.db_write_script }}</textarea><br>
+  <textarea id="db_write_script" name="db_write_script" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_write_script }}</textarea><br>
   
   <label for="reference_data">Reference Data:</label><br>
-  <textarea id="reference_data" name="references" style="width: 500px; height: 100px;">{{ bot.reference_data }}</textarea><br>
+  <textarea id="reference_data" name="references" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.reference_data }}</textarea><br>
   
   <label for="output_destination">Output Message Destination:</label><br>
-  <textarea id="output_destination" name="output_destination" style="width: 500px; height: 100px;">{{ bot.output_destination }}</textarea><br>
+  <textarea id="output_destination" name="output_destination" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.output_destination }}</textarea><br>
 
   <input type="submit" value="Submit Configuration">
 </form>

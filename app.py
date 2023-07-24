@@ -93,9 +93,9 @@ def page_1():
     bot = cur.fetchone()
     cur.close()
 
-    bot = Bot(*bot_data) if bot_data else None
-    #if not bot:
-    #    bot = Bot.get_bot_by_number("1")
+    #bot = Bot(*bot_data) if bot_data else None
+    if not bot:
+        bot = Bot.get_bot_by_number("1")
 
     user_text = ""
     response = ""

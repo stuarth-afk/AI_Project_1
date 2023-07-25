@@ -94,6 +94,10 @@ def submit_config():
     
     # Execute SQL query
     cur.execute(sql, params)
+    try:
+        cur.execute(sql, params)
+    except Exception as e:
+        print("Database Error:", e)
 
     # Commit the transaction
     mysql.connection.commit()

@@ -68,6 +68,9 @@ def index():
 ####################################
 @app.route('/submit_config', methods=['POST'])
 def submit_config():
+    # print form data for debugging
+    print(f"Form data: {request.form}")
+    
     # Get form data
     data = {field: request.form.get(field) for field in bot_fields}
     

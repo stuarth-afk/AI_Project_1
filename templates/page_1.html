@@ -17,8 +17,7 @@
 
 <h2>Configuration</h2>
 <form action="/submit_config" method="post">
-  <label for="number">Bot Number ( 1 ..3 ):</label><br>
-  <textarea id="number" name="number" style="width: 20px; height: 20px;" autocomplete="off">{{ bot.number }}</textarea><br>
+  <input type="hidden" name="number" value="{{ bot.number }}">
 
   <label for="name">Bot Name:</label><br>
   <textarea id="name" name="name" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.name }}</textarea><br>

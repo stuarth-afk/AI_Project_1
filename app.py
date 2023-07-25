@@ -87,10 +87,13 @@ def submit_config():
     #sql = "INSERT INTO Bot (%s) VALUES (%s)" % (columns, placeholders)
     update_stmt = ', '.join([f'{col} = %s' for col in data.keys()])
     
-    sql = f"UPDATE Bot SET {update_stmt} WHERE number = {bot_number}"
-
+    sql = f"UPDATE Bot SET {update_stmt} WHERE number = %s"
+    # Add bot_number to the list of parameters.
+    params = list(data.values())
+    params.append(bot_number)
+    
     # Execute SQL query
-    cur.execute(sql, list(data.values()))
+    cur.execute(sql, params)
 
     # Commit the transaction
     mysql.connection.commit()

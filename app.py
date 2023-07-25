@@ -71,13 +71,23 @@ def submit_config():
     # Get form data
     data = {field: request.form.get(field) for field in bot_fields}
 
+    # Check if the number is provided from the form
+    bot_number = data.get('number', None)
+    if bot_number is None:
+        # handle error
+        flash("Number is not provided in the form", 'error')
+        return redirect(url_for('index'))
+    
     # Create MySQL cursor
     cur = mysql.connection.cursor()
 
     # Prepare SQL query
     placeholders = ', '.join(['%s'] * len(data))
     columns = ', '.join(data.keys())
-    sql = "INSERT INTO Bot (%s) VALUES (%s)" % (columns, placeholders)
+    #sql = "INSERT INTO Bot (%s) VALUES (%s)" % (columns, placeholders)
+    update_stmt = ', '.join([f'{col} = %s' for col in data.keys()])
+    
+    sql = f"UPDATE Bot SET {update_stmt} WHERE number = {bot_number}"
 
     # Execute SQL query
     cur.execute(sql, list(data.values()))
@@ -90,14 +100,6 @@ def submit_config():
 
     # Flash a success message
     flash("Configuration submitted successfully!", 'success')
-
-    bot_number = data.get('number', None)
-    if bot_number is None:
-        # handle error
-        flash("Number is not provided in the form", 'error')
-        return redirect(url_for('index'))
-
-
 
     # Redirect to the page number
     return redirect(url_for('page', number=bot_number))

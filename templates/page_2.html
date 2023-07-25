@@ -4,12 +4,16 @@
   <title>AI Bot 2</title>
 </head>
 <body>
+<<<<<<< HEAD
 <h2>AI Bot 2</h2>
+=======
+<h2>Development Bot 2</h2>
+>>>>>>> ac6104b2ede825dc6d047ace785b70d4f5ab493a
 <a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
 <p>This AI bot is Alpha Version 0.1<p>
 <form action="/page_2" method="post">
   <label for="text">Enter Text:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 150px;">{{ user_text }}</textarea><br>
   <input type="submit" value="Submit">
 </form>
 
@@ -18,6 +22,7 @@
 <h2>Configuration</h2>
 <form action="/submit_config" method="post">
   <label for="bot_name">Bot Name:</label><br>
+<<<<<<< HEAD
   <textarea id="text" name="text" style="width: 500px; height: 20px;">{{ bot_name }}</textarea><br>
   
   <label for="ai_model">AI Model:</label><br>
@@ -25,18 +30,31 @@
   
   <label for="system_prompt">System Prompt:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 200px;">{{ system_prompt }}</textarea><br>
+=======
+  <textarea id="text" name="text" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.name }}</textarea><br>
+  
+  <label for="ai_model">AI Model:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.ai_model }}</textarea><br>
+  
+  <label for="system_prompt">System Prompt:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 200px;" autocomplete="off">{{ bot.system_prompt }}</textarea><br>
+>>>>>>> ac6104b2ede825dc6d047ace785b70d4f5ab493a
   
   <label for="db_read_script">Database Read Script:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ db_read_script }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_read_script }}</textarea><br>
   
   <label for="db_write_script">Database Write Script:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ db_write_script }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_write_script }}</textarea><br>
   
-  <label for="references">References:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ references }}</textarea><br>
+  <label for="reference_data">Reference Data:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 50px;" autocomplete="off">{{ bot.reference_data }}</textarea><br>
   
   <label for="output_destination">Output Message Destination:</label><br>
+<<<<<<< HEAD
   <textarea id="text" name="text" style="width: 500px; height: 20px;">{{ output_destination }}</textarea><br>
+=======
+  <textarea id="text" name="text" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.output_destination }}</textarea><br>
+>>>>>>> ac6104b2ede825dc6d047ace785b70d4f5ab493a
 
   <input type="submit" value="Submit Configuration">
 </form>

@@ -52,7 +52,7 @@ class Bot:
             bot = Bot(*result)
             #print(f"Bot created: {bot.__dict__}")
             #print(f"Bot created with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
-            print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
+            #print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
             return bot
 
         return None
@@ -98,12 +98,11 @@ def submit_config():
     
 @app.route('/bot/<int:number>', methods=['GET', 'POST'])
 def page(number):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM Bot ORDER BY id DESC LIMIT 1")
-    bot_data = cur.fetchone()
-    cur.close()
-
-    bot = Bot(*bot_data) if bot_data else None
+    bot = Bot.get_bot_by_number(number)
+    
+    # if bot is None, return an error page
+    if not bot:
+        return render_template('error.html', message="Bot not found"), 404
 
     user_text = ""
     response = ""

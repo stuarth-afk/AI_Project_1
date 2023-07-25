@@ -134,14 +134,14 @@ def page(number):
         # Add any processing of the user text you want here
         response = openai.Completion.create(
             model=bot.ai_model,       #"text-davinci-003",
-            prompt=generate_prompt(user_text),
+            prompt=generate_prompt(bot, user_text),
             temperature=0.6,
             max_tokens=1000,
         )
         response=response.choices[0].text.strip()
     return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
     
-def generate_prompt(user_text):
+def generate_prompt(bot, user_text):
     return bot.system_prompt
 
 if __name__ == '__main__':

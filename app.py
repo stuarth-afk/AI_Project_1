@@ -70,6 +70,8 @@ def index():
 def submit_config():
     # Get form data
     data = {field: request.form.get(field) for field in bot_fields}
+    
+    print("Data to be updated: ", data) # Debug line
 
     # Check if the number is provided from the form
     bot_number = data.get('number', None)
@@ -77,6 +79,9 @@ def submit_config():
         # handle error
         flash("Number is not provided in the form", 'error')
         return redirect(url_for('index'))
+
+    # Print data for debugging
+    print(f"Data to be inserted/updated: {data}")
     
     # Create MySQL cursor
     cur = mysql.connection.cursor()
@@ -86,6 +91,9 @@ def submit_config():
     update_stmt = ', '.join([f'{col} = %s' for col in data.keys()])
     sql = f"UPDATE Bot SET {update_stmt} WHERE number = %s"
     params = list(data.values()) + [bot_number]
+
+    print("SQL query: ", sql) # Debug line
+    print("Params: ", params) # Debug line
     
     # Execute SQL query
     try:

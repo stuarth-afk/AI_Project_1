@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Bot 3</title>
+</head>
+<body>
+<h2>Development Bot 3</h2>
+<a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
+<p>This AI bot is Beta Version 0.1<p>
+<form action="/page_3" method="post">
+  <label for="text">Enter Text:</label><br>
+  <textarea id="text" name="text" style="width: 500px; height: 150px;">{{ user_text }}</textarea><br>
+  <input type="submit" value="Submit">
+</form>
 
+<p>AI Bot Response: {{ response }}</p><br><br><br><br>
+
+<h2>Configuration</h2>
+<form action="/submit_config" method="post">
+  <label for="name">Bot Name:</label><br>
+  <textarea id="name" name="name" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.name }}</textarea><br>
+  
+  <label for="ai_model">AI Model:</label><br>
+  <textarea id="ai_model" name="ai_model" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.ai_model }}</textarea><br>
+  
+  <label for="system_prompt">System Prompt:</label><br>
+  <textarea id="system_prompt" name="system_prompt" style="width: 500px; height: 200px;" autocomplete="off">{{ bot.system_prompt }}</textarea><br>
+  
+  <label for="db_read_script">Database Read Script:</label><br>
+  <textarea id="db_read_script" name="db_read_script" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_read_script }}</textarea><br>
+  
+  <label for="db_write_script">Database Write Script:</label><br>
+  <textarea id="db_write_script" name="db_write_script" style="width: 500px; height: 100px;" autocomplete="off">{{ bot.db_write_script }}</textarea><br>
+  
+  <label for="reference_data">Reference Data:</label><br>
+  <textarea id="reference_data" name="references" style="width: 500px; height: 50px;" autocomplete="off">{{ bot.reference_data }}</textarea><br>
+  
+  <label for="output_destination">Output Message Destination:</label><br>
+  <textarea id="output_destination" name="output_destination" style="width: 500px; height: 25px;" autocomplete="off">{{ bot.output_destination }}</textarea><br>
+
+  <input type="submit" value="Submit Configuration">
+</form>
+
+  
+</body>
+</html>

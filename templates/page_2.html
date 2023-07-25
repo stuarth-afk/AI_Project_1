@@ -4,10 +4,9 @@
   <title>AI Bot 2</title>
 </head>
 <body>
-<h2>Development AI Bot 2</h2>
+<h2>AI Bot 2</h2>
 <a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
-<a href="{{ url_for('page_1') }}"><button>Bot 1</button></a>
-<p>This AI bot is Beta Version 0.1<p>
+<p>This AI bot is Alpha Version 0.1<p>
 <form action="/page_2" method="post">
   <label for="text">Enter Text:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ user_text }}</textarea><br>
@@ -19,13 +18,13 @@
 <h2>Configuration</h2>
 <form action="/submit_config" method="post">
   <label for="bot_name">Bot Name:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ bot_name }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 20px;">{{ bot_name }}</textarea><br>
   
   <label for="ai_model">AI Model:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ ai_model }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 20px;">{{ ai_model }}</textarea><br>
   
   <label for="system_prompt">System Prompt:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 25px;">{{ system_prompt }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 200px;">{{ system_prompt }}</textarea><br>
   
   <label for="db_read_script">Database Read Script:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ db_read_script }}</textarea><br>
@@ -37,7 +36,7 @@
   <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ references }}</textarea><br>
   
   <label for="output_destination">Output Message Destination:</label><br>
-  <textarea id="text" name="text" style="width: 500px; height: 100px;">{{ output_destination }}</textarea><br>
+  <textarea id="text" name="text" style="width: 500px; height: 20px;">{{ output_destination }}</textarea><br>
 
   <input type="submit" value="Submit Configuration">
 </form>

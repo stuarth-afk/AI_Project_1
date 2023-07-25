@@ -91,8 +91,14 @@ def submit_config():
     # Flash a success message
     flash("Configuration submitted successfully!", 'success')
 
-    bot_number = data['number']
-    
+    bot_number = data.get('number', None)
+    if bot_number is None:
+        # handle error
+        flash("Number is not provided in the form", 'error')
+        return redirect(url_for('index'))
+
+
+
     # Redirect to the page number
     return redirect(url_for('page', number=bot_number))
     

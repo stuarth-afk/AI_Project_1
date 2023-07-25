@@ -82,25 +82,20 @@ def submit_config():
     cur = mysql.connection.cursor()
 
     # Prepare SQL query
-    placeholders = ', '.join(['%s'] * len(data))
-    columns = ', '.join(data.keys())
-    #sql = "INSERT INTO Bot (%s) VALUES (%s)" % (columns, placeholders)
+   placeholders = ', '.join(['%s'] * len(data))
     update_stmt = ', '.join([f'{col} = %s' for col in data.keys()])
-    
     sql = f"UPDATE Bot SET {update_stmt} WHERE number = %s"
-    # Add bot_number to the list of parameters.
-    params = list(data.values())
-    params.append(bot_number)
+    params = list(data.values()) + [bot_number]
     
     # Execute SQL query
-    cur.execute(sql, params)
     try:
         cur.execute(sql, params)
+        # Commit the transaction
+        mysql.connection.commit()
     except Exception as e:
         print("Database Error:", e)
-
-    # Commit the transaction
-    mysql.connection.commit()
+        flash("Failed to update configuration due to database error.", 'error')
+        return redirect(url_for('page', number=bot_number))
 
     # Close the cursor
     cur.close()

@@ -14,8 +14,8 @@ app.secret_key = secrets.token_bytes(16) # <- random key , only used for cookie 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load YAML settings file
-db_config = yaml.load(open('db.yaml'))
-#db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
+#db_config = yaml.load(open('db.yaml'))
+db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
 
 app.config['MYSQL_HOST'] = db_config['mysql_host']
 app.config['MYSQL_USER'] = db_config['mysql_user']

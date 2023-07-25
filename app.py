@@ -82,7 +82,7 @@ def submit_config():
     cur = mysql.connection.cursor()
 
     # Prepare SQL query
-   placeholders = ', '.join(['%s'] * len(data))
+    placeholders = ', '.join(['%s'] * len(data))
     update_stmt = ', '.join([f'{col} = %s' for col in data.keys()])
     sql = f"UPDATE Bot SET {update_stmt} WHERE number = %s"
     params = list(data.values()) + [bot_number]

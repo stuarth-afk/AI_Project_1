@@ -139,10 +139,15 @@ def page(number):
             max_tokens=1000,
         )
         response=response.choices[0].text.strip()
-    return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
-    
+        print(f"Bot model: {bot.ai_model}")
+        print(f"Bot prompt: {bot.system_prompt}")
+
+    #return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
+    return render_template(url_for('page', number=bot_number), bot=bot, user_text=user_text, response=response)('page', number=bot_number)
+
 def generate_prompt(bot, user_text):
-    return bot.system_prompt
+    #return bot.system_prompt
+    return f"{bot.system_prompt}\n{user_text}"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

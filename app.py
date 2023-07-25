@@ -96,8 +96,8 @@ def submit_config():
     # Redirect to the page number
     return redirect(url_for('page', number=bot_number))
     
-@app.route('/bot/<number>', methods=['GET', 'POST'])
-def page_1():
+@app.route('/bot/<int:number>', methods=['GET', 'POST'])
+def page(number):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM Bot ORDER BY id DESC LIMIT 1")
     bot_data = cur.fetchone()

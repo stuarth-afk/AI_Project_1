@@ -29,7 +29,7 @@ bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_s
 
 
 class Bot:
-    def __init__(self, id, name, number, role, input_source, output):
+    def __init__(self, id, name, number, role, input_source, output, ai_model, system_prompt, db_read_script, db_write_Script, reference_data):
         self.id = id
         self.name = name
         self.number = number

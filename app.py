@@ -64,7 +64,7 @@ def index():
     return render_template('index.html')
 
 ####################################
-####           Bot 1            ####
+####           Bot x            ####
 ####################################
 @app.route('/submit_config', methods=['POST'])
 def submit_config():
@@ -93,7 +93,7 @@ def submit_config():
 
     bot_number = data['number']
     
-    # Redirect to the page_1
+    # Redirect to the page number
     return redirect(url_for('page', number=bot_number))
     
 @app.route('/bot/<number>', methods=['GET', 'POST'])

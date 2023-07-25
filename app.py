@@ -143,7 +143,7 @@ def page(number):
         print(f"Bot prompt: {bot.system_prompt}")
 
     #return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
-    return redirect(url_for('page', number=bot_number))
+    return redirect(url_for('page', number=bot.number))
 
 
 def generate_prompt(bot, user_text):

@@ -29,19 +29,16 @@ bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_s
 
 
 class Bot:
-    def __init__(self, id, name, number, role, input_source, output, ai_model, system_prompt, db_read_script, db_write_Script, reference_data):
+    def __init__(self, id, name, ai_model, system_prompt, db_read_script, db_write_script, reference_data, output_destination, number):
         self.id = id
         self.name = name
-        self.number = number
-        self.role = role
-        self.input_source = input_source
-        self.output = output
         self.ai_model = ai_model
         self.system_prompt = system_prompt
         self.db_read_script = db_read_script
         self.db_write_script = db_write_script
         self.reference_data = reference_data
-        print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
+        self.output_destination = output_destination
+        self.number = number
 
     @staticmethod
     def get_bot_by_number(number):

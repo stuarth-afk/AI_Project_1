@@ -24,7 +24,7 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-@app.before_first_request
+@app.got_first_request
 def initialize_database():
     cur = mysql.connection.cursor()
 

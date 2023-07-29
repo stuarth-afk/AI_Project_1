@@ -24,8 +24,8 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-
-def create_tables_if_not_exist():
+@app.before_first_request
+def initialize_database():
     cur = mysql.connection.cursor()
 
     # create input_messages table
@@ -82,10 +82,6 @@ def create_tables_if_not_exist():
     ''')
 
     mysql.connection.commit()
-
-@app.got_first_request
-def initialize_database():
-    create_tables_if_not_exist()
 
 # Additional Bot model fields
 bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']

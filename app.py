@@ -24,8 +24,7 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-@app.got_first_request
-def initialize_database():
+
     cur = mysql.connection.cursor()
 
     # create input_messages table
@@ -59,7 +58,7 @@ def initialize_database():
             message TEXT,
             created_at TIMESTAMP,
             destination VARCHAR(255),
-            success TEXT DEFAULT 0
+            success BOOL DEFAULT 0
         )
     ''')
 

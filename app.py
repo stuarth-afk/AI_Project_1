@@ -24,63 +24,64 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
+def create_tables_if_not_exist():
+    cur = mysql.connection.cursor()
 
-cur = mysql.connection.cursor()
+    # create input_messages table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS input_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            bot_id INT,
+            message_1 TEXT,
+            message_2 TEXT,
+            message_3 TEXT,
+            message_4 TEXT,
+            message_5 TEXT,
+            message_6 TEXT,
+            message_7 TEXT,
+            message_8 TEXT,
+            message_9 TEXT,
+            message_10 TEXT,
+            message_11 TEXT,
+            message_12 TEXT,
+            used BOOL DEFAULT 0,
+            created_at TIMESTAMP,
+            source VARCHAR(255)
+        )
+    ''')
 
-# create input_messages table
-cur.execute('''
-    CREATE TABLE IF NOT EXISTS input_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        bot_id INT,
-        message_1 TEXT,
-        message_2 TEXT,
-        message_3 TEXT,
-        message_4 TEXT,
-        message_5 TEXT,
-        message_6 TEXT,
-        message_7 TEXT,
-        message_8 TEXT,
-        message_9 TEXT,
-        message_10 TEXT,
-        message_11 TEXT,
-        message_12 TEXT,
-        used BOOL DEFAULT 0,
-        created_at TIMESTAMP,
-        source VARCHAR(255)
-    )
-''')
+    # create output_messages table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS output_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            bot_id INT,
+            message TEXT,
+            created_at TIMESTAMP,
+            destination VARCHAR(255),
+            success BOOL DEFAULT 0
+        )
+    ''')
 
-# create output_messages table
-cur.execute('''
-    CREATE TABLE IF NOT EXISTS output_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        bot_id INT,
-        message TEXT,
-        created_at TIMESTAMP,
-        destination VARCHAR(255),
-        success BOOL DEFAULT 0
-    )
-''')
+    # create memory_info table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS memory_info (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            bot_id INT,
+            info_1 TEXT,
+            info_2 TEXT,
+            info_3 TEXT,
+            info_4 TEXT,
+            info_5 TEXT,
+            info_6 TEXT,
+            info_7 TEXT,
+            info_8 TEXT,
+            info_9 TEXT,
+            info_10 TEXT
+        )
+    ''')
 
-# create memory_info table
-cur.execute('''
-    CREATE TABLE IF NOT EXISTS memory_info (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        bot_id INT,
-        info_1 TEXT,
-        info_2 TEXT,
-        info_3 TEXT,
-        info_4 TEXT,
-        info_5 TEXT,
-        info_6 TEXT,
-        info_7 TEXT,
-        info_8 TEXT,
-        info_9 TEXT,
-        info_10 TEXT
-    )
-''')
+    mysql.connection.commit()
 
-mysql.connection.commit()
 
 # Additional Bot model fields
 bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']
@@ -114,6 +115,10 @@ class Bot:
             return bot
 
         return None
+
+@app.before_first_request
+def initialize_database():
+    create_tables_if_not_exist()
 
 @app.route('/')
 def index():

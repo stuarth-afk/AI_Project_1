@@ -59,7 +59,7 @@ def initialize_database():
             message TEXT,
             created_at TIMESTAMP,
             destination VARCHAR(255),
-            success BOOL DEFAULT 0
+            success TEXT DEFAULT 0
         )
     ''')
 

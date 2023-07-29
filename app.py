@@ -24,40 +24,6 @@ app.config['MYSQL_DB'] = db_config['mysql_db']
 
 mysql = MySQL(app)
 
-create_tables_if_not_exist()
-
-# Additional Bot model fields
-bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']
-
-
-class Bot:
-    def __init__(self, id, name, ai_model, system_prompt, db_read_script, db_write_script, reference_data, output_destination, number):
-        self.id = id
-        self.name = name
-        self.ai_model = ai_model
-        self.system_prompt = system_prompt
-        self.db_read_script = db_read_script
-        self.db_write_script = db_write_script
-        self.reference_data = reference_data
-        self.output_destination = output_destination
-        self.number = number
-
-    @staticmethod
-    def get_bot_by_number(number):
-        print(f"Getting bot with number: {number}")
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM Bot WHERE number = %s", [number])
-        result = cur.fetchone()
-        print(f"SQL Query Result: {result}")
-
-        if result:
-            bot = Bot(*result)
-            #print(f"Bot created: {bot.__dict__}")
-            #print(f"Bot created with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
-            #print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
-            return bot
-
-        return None
 
 def create_tables_if_not_exist():
     cur = mysql.connection.cursor()
@@ -116,6 +82,41 @@ def create_tables_if_not_exist():
     ''')
 
     mysql.connection.commit()
+
+create_tables_if_not_exist()
+
+# Additional Bot model fields
+bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']
+
+
+class Bot:
+    def __init__(self, id, name, ai_model, system_prompt, db_read_script, db_write_script, reference_data, output_destination, number):
+        self.id = id
+        self.name = name
+        self.ai_model = ai_model
+        self.system_prompt = system_prompt
+        self.db_read_script = db_read_script
+        self.db_write_script = db_write_script
+        self.reference_data = reference_data
+        self.output_destination = output_destination
+        self.number = number
+
+    @staticmethod
+    def get_bot_by_number(number):
+        print(f"Getting bot with number: {number}")
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM Bot WHERE number = %s", [number])
+        result = cur.fetchone()
+        print(f"SQL Query Result: {result}")
+
+        if result:
+            bot = Bot(*result)
+            #print(f"Bot created: {bot.__dict__}")
+            #print(f"Bot created with id: {bot.id}, name: {bot.name}, number: {bot.number}, role: {bot.role}, input_source: {bot.input_source}, output: {bot.output}")
+            #print(f"Bot created with id: {id}, name: {name}, number: {number}, role: {role}, input_source: {input_source}, output: {output}")
+            return bot
+
+        return None
 
 @app.route('/')
 def index():

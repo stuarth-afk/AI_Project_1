@@ -116,7 +116,7 @@ class Bot:
 
         return None
 
-@app.before_first_request
+@app.got_first_request
 def initialize_database():
     create_tables_if_not_exist()
 

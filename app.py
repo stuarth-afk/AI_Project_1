@@ -83,7 +83,9 @@ def create_tables_if_not_exist():
 
     mysql.connection.commit()
 
-create_tables_if_not_exist()
+@app.before_first_request
+def initialize_database():
+    create_tables_if_not_exist()
 
 # Additional Bot model fields
 bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']

@@ -42,7 +42,7 @@ def create_tables_if_not_exist():
     with app.app_context():
         # Create MySQL cursor
         cur = mysql.connection.cursor()
-        print(cur)
+        #print(cur)
 
         # create input_messages table
         cur.execute('''
@@ -93,7 +93,9 @@ def create_tables_if_not_exist():
                 info_7 TEXT,
                 info_8 TEXT,
                 info_9 TEXT,
-                info_10 TEXT
+                info_10 TEXT,
+                created_at TIMESTAMP,
+                INDEX bot_id_created_at_idx (bot_id, created_at DESC)
             )
         ''')
 
@@ -171,8 +173,11 @@ def read_from_output_messages(bot_id):
 def read_from_memory_info(bot_id):
     with app.app_context():
         cur = mysql.connection.cursor()
-        sql = "SELECT * FROM memory_info WHERE bot_id = %s"
+        
+        # Get last 10 messages from the memory_info table for the given bot_id
+        sql = "SELECT * FROM memory_info WHERE bot_id = %s ORDER BY created_at DESC LIMIT 10"
         cur.execute(sql, [bot_id])
+        
         result = cur.fetchall()
         return result
 
@@ -199,12 +204,18 @@ def update_input_messages(bot_id, user_text):
 
         mysql.connection.commit()
 
-def insert_output_message(bot_id, message, destination):
+def insert_output_message(bot_id, user_message, bot_message, destination):
+#def insert_output_message(bot_id, message, destination):
     with app.app_context():
         cur = mysql.connection.cursor()
 
+        # Save bot response to the output_messages table
         cur.execute("INSERT INTO output_messages (bot_id, message, created_at, destination) VALUES (%s, %s, NOW(), %s)", 
-                    (bot_id, message, destination))
+                    (bot_id, bot_message, destination))
+
+        # Save user message and bot response to the memory_info table
+        cur.execute("INSERT INTO memory_info (bot_id, info_1, info_2, created_at) VALUES (%s, %s, %s, NOW())",
+                    (bot_id, user_message, bot_message))
 
         mysql.connection.commit()
 
@@ -425,7 +436,8 @@ def page(number):
         formatted_output_message = response + " , \n"
         combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
         
-        insert_output_message(bot.id, combined_message, bot.output_destination)
+        insert_output_message(bot.id, user_text, response, bot.output_destination)
+        #insert_output_message(bot.id, combined_message, bot.output_destination)
 
 
         # Update the input_messages table for the destination bot

@@ -204,7 +204,7 @@ def insert_output_message(bot_id, message, destination):
 
 def generate_prompt(bot, user_text):
     #return bot.system_prompt
-    return f"role:system , content:{bot.system_prompt} ,\nrole:user , content:{user_text} ,\n"
+    return f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
 
 
 
@@ -343,7 +343,7 @@ def page(number):
         print(f"Bot prompt: {bot.system_prompt}")
 
         # Update the output_messages table with the combined response
-        combined_message = " , role:user , content:" + user_text + " ,\nrole:assistant , content:" + response + " ,\n"
+        combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + ",\n\"role\" : \"assistant\" , \"content\" : \"" + response + "\" , \n"
         insert_output_message(bot.id, combined_message, bot.output_destination)
 
         # Update the input_messages table for the destination bot

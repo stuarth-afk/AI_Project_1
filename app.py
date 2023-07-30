@@ -224,11 +224,11 @@ def generate_prompt(bot, user_text):
 
     prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
     for message in messages:
-        prompt += f"\"role\" : \"user\" , \"content\" : \"{message}\" , \n"
+        prompt += f"{message} , \n"
     prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
     
     print("DEBUG PROMPT : "+ prompt )
-    time.sleep(5)  # add a 5 seconds delay for debug
+    #time.sleep(5)  # add a 5 seconds delay for debug
 
     return prompt
 
@@ -370,12 +370,15 @@ def page(number):
         #print(f"Bot prompt: {bot.system_prompt}")
 
         # Update the output_messages table with the combined response
+        formatted_output_message = response + " , \n"
         combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
+        
         insert_output_message(bot.id, combined_message, bot.output_destination)
+
 
         # Update the input_messages table for the destination bot
         destination_bot_id = int(bot.output_destination)  # This is the bot id of the destination
-        update_input_messages(destination_bot_id, combined_message)
+        update_input_messages(destination_bot_id, formatted_output_message)
 
     return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
     #return redirect(url_for('page', number=bot.number))

@@ -34,7 +34,8 @@ print("Initializing MySQL connection...")
 # create tables
 print("Creating tables...")
 def create_tables_if_not_exist():
-    cur = mysql.connection.cursor()
+    mysql_local = MySQL(app)
+    cur = mysql_local.connection.cursor()
 
     # create input_messages table
     cur.execute('''

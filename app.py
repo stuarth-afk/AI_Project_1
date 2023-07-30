@@ -134,7 +134,7 @@ class Bot:
 #**********************************
 #**  First Scan Function Calls   **
 #**********************************
-#create_tables_if_not_exist()
+create_tables_if_not_exist()
 
 
 

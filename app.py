@@ -433,10 +433,11 @@ def page(number):
         #print(f"Bot prompt: {bot.system_prompt}")
 
         # Update the output_messages table with the combined response
+        formatted_user_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n"
         formatted_output_message = response + " , \n"
-        combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
+        #combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
         
-        insert_output_message(bot.id, user_text, response, bot.output_destination)
+        insert_output_message(bot.id, formatted_user_message, formatted_output_message, bot.output_destination)
         #insert_output_message(bot.id, combined_message, bot.output_destination)
 
 

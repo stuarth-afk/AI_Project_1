@@ -100,6 +100,108 @@ def create_tables_if_not_exist():
 
         mysql.connection.commit()
 
+# Function to insert data to input_messages table
+def insert_into_input_messages(bot_id, messages, source):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        # Prepare SQL query
+        sql = '''
+            INSERT INTO input_messages 
+            (bot_id, message_1, message_2, message_3, message_4, message_5, message_6, message_7, message_8, message_9, message_10, message_11, message_12, created_at, source)
+            VALUES 
+            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s)
+        '''
+        params = [bot_id] + messages + [source]
+        cur.execute(sql, params)
+        mysql.connection.commit()
+
+# Function to insert data to output_messages table
+def insert_into_output_messages(bot_id, message, destination, success):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = '''
+            INSERT INTO output_messages 
+            (bot_id, message, created_at, destination, success)
+            VALUES 
+            (%s, %s, NOW(), %s, %s)
+        '''
+        params = [bot_id, message, destination, success]
+        cur.execute(sql, params)
+        mysql.connection.commit()
+
+# Function to insert data to memory_info table
+def insert_into_memory_info(bot_id, infos):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = '''
+            INSERT INTO memory_info 
+            (bot_id, info_1, info_2, info_3, info_4, info_5, info_6, info_7, info_8, info_9, info_10)
+            VALUES 
+            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        '''
+        params = [bot_id] + infos
+        cur.execute(sql, params)
+        mysql.connection.commit()
+
+# Function to read data from input_messages table
+def read_from_input_messages(bot_id):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = "SELECT * FROM input_messages WHERE bot_id = %s AND used = 0"
+        cur.execute(sql, [bot_id])
+        result = cur.fetchall()
+        return result
+
+# Function to read data from output_messages table
+def read_from_output_messages(bot_id):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = "SELECT * FROM output_messages WHERE bot_id = %s AND success = 1"
+        cur.execute(sql, [bot_id])
+        result = cur.fetchall()
+        return result
+
+# Function to read data from memory_info table
+def read_from_memory_info(bot_id):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = "SELECT * FROM memory_info WHERE bot_id = %s"
+        cur.execute(sql, [bot_id])
+        result = cur.fetchall()
+        return result
+
+def update_input_messages(bot_id, user_text):
+    with app.app_context():
+        # Create MySQL cursor
+        cur = mysql.connection.cursor()
+
+        # Find the next available slot in the input_messages table
+        cur.execute("SELECT * FROM input_messages WHERE bot_id = %s AND used = 0 ORDER BY id", (bot_id,))
+        result = cur.fetchone()
+        if result is not None:
+            # We have a row to update
+            row_id = result[0]
+            # Find the next available message slot
+            for i in range(2, 14):  # column indices for message_1 through message_12
+                if result[i] is None:
+                    # We've found a slot, update it with the message
+                    cur.execute(f"UPDATE input_messages SET message_{i-1} = %s WHERE id = %s", (user_text, row_id))
+                    break
+        else:
+            # We need to insert a new row
+            cur.execute("INSERT INTO input_messages (bot_id, message_1) VALUES (%s, %s)", (bot_id, user_text))
+
+        mysql.connection.commit()
+
+def insert_output_message(bot_id, message, destination):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+
+        cur.execute("INSERT INTO output_messages (bot_id, message, created_at, destination) VALUES (%s, %s, NOW(), %s)", 
+                    (bot_id, message, destination))
+
+        mysql.connection.commit()
+
 def generate_prompt(bot, user_text):
     #return bot.system_prompt
     return f"{bot.system_prompt}\n{user_text}"
@@ -233,6 +335,14 @@ def page(number):
         response=response.choices[0].text.strip()
         print(f"Bot model: {bot.ai_model}")
         print(f"Bot prompt: {bot.system_prompt}")
+
+        # Update the output_messages table with the combined response
+        combined_message = user_text + " " + response
+        insert_output_message(bot.id, combined_message, bot.output_destination)
+
+        # Update the input_messages table for the destination bot
+        destination_bot_id = int(bot.output_destination)  # This is the bot id of the destination
+        update_input_messages(destination_bot_id, combined_message)
 
     return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
     #return redirect(url_for('page', number=bot.number))

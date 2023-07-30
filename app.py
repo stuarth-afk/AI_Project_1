@@ -6,6 +6,7 @@ from flask_mysqldb import MySQL
 import yaml
 import os
 import secrets
+import time
 
 print("Starting the application...")
 app = Flask(__name__)
@@ -26,6 +27,7 @@ app.config['MYSQL_PASSWORD'] = db_config['mysql_password']
 app.config['MYSQL_DB'] = db_config['mysql_db']
 mysql = MySQL(app)
 print("Initializing MySQL connection...")
+time.sleep(5)  # add a 5 seconds delay
 
 #*************************   
 #**  Define Functions   **
@@ -34,8 +36,10 @@ print("Initializing MySQL connection...")
 # create tables
 print("Creating tables...")
 def create_tables_if_not_exist():
-    mysql_local = MySQL(app)
-    cur = mysql_local.connection.cursor()
+    #mysql_local = MySQL(app)
+    # Create MySQL cursor
+    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
 
     # create input_messages table
     cur.execute('''

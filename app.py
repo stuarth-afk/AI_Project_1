@@ -194,8 +194,7 @@ def update_input_messages(bot_id, user_text):
 
         mysql.connection.commit()
 
-def insert_output_message(bot_id, user_message, bot_message, destination):
-#def insert_output_message(bot_id, message, destination):
+def insert_output_message(bot_id, user_message, bot_message, destination, db_read_script, db_write_script):
     with app.app_context():
         cur = mysql.connection.cursor()
 
@@ -203,9 +202,14 @@ def insert_output_message(bot_id, user_message, bot_message, destination):
         cur.execute("INSERT INTO output_messages (bot_id, message, created_at, destination) VALUES (%s, %s, NOW(), %s)", 
                     (bot_id, bot_message, destination))
 
-        # Save user message and bot response to the memory_info table
-        cur.execute("INSERT INTO memory_info (bot_id, info_1, info_2, created_at) VALUES (%s, %s, %s, NOW())",
-                    (bot_id, user_message, bot_message))
+        # Prepare data to be inserted into the memory_info table
+        info_1_data = user_message if db_read_script else None
+        info_2_data = bot_message if db_write_script else None
+
+        # If at least one field is not None, insert the record into the memory_info table
+        if info_1_data is not None or info_2_data is not None:
+            cur.execute("INSERT INTO memory_info (bot_id, info_1, info_2, created_at) VALUES (%s, %s, %s, NOW())",
+                        (bot_id, info_1_data, info_2_data))
 
         mysql.connection.commit()
 
@@ -422,12 +426,15 @@ def page(number):
         #print(f"Bot model: {bot.ai_model}")
         #print(f"Bot prompt: {bot.system_prompt}")
 
-        # Update the output_messages table with the combined response
+        # Update the output_messages table with the bot response
         formatted_user_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n"
         formatted_output_message = response + " , \n"
         #combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
         
-        insert_output_message(bot.id, formatted_user_message, formatted_output_message, bot.output_destination)
+        db_read_script_bool = bot.db_read_script.lower() == 'true'
+        db_write_script_bool = bot.db_write_script.lower() == 'true'
+
+        insert_output_message(bot.id, formatted_user_message, formatted_output_message, bot.output_destination, db_read_script_bool, db_write_script_bool)
         #insert_output_message(bot.id, combined_message, bot.output_destination)
 
 

@@ -27,6 +27,9 @@ app.config['MYSQL_PASSWORD'] = db_config['mysql_password']
 app.config['MYSQL_DB'] = db_config['mysql_db']
 mysql = MySQL(app)
 print("Initializing MySQL connection...")
+with app.app_context():
+    cur = mysql.connection.cursor()
+    print(cur)
 time.sleep(5)  # add a 5 seconds delay
 
 #*************************   
@@ -37,64 +40,65 @@ time.sleep(5)  # add a 5 seconds delay
 print("Creating tables...")
 def create_tables_if_not_exist():
     #mysql_local = MySQL(app)
-    # Create MySQL cursor
-    cur = mysql.connection.cursor()
-    cur = mysql.connection.cursor()
+    with app.app_context():
+        # Create MySQL cursor
+        cur = mysql.connection.cursor()
+        print(cur)
 
-    # create input_messages table
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS input_messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            bot_id INT,
-            message_1 TEXT,
-            message_2 TEXT,
-            message_3 TEXT,
-            message_4 TEXT,
-            message_5 TEXT,
-            message_6 TEXT,
-            message_7 TEXT,
-            message_8 TEXT,
-            message_9 TEXT,
-            message_10 TEXT,
-            message_11 TEXT,
-            message_12 TEXT,
-            used BOOL DEFAULT 0,
-            created_at TIMESTAMP,
-            source VARCHAR(255)
-        )
-    ''')
+        # create input_messages table
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS input_messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                bot_id INT,
+                message_1 TEXT,
+                message_2 TEXT,
+                message_3 TEXT,
+                message_4 TEXT,
+                message_5 TEXT,
+                message_6 TEXT,
+                message_7 TEXT,
+                message_8 TEXT,
+                message_9 TEXT,
+                message_10 TEXT,
+                message_11 TEXT,
+                message_12 TEXT,
+                used BOOL DEFAULT 0,
+                created_at TIMESTAMP,
+                source VARCHAR(255)
+            )
+        ''')
 
-    # create output_messages table
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS output_messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            bot_id INT,
-            message TEXT,
-            created_at TIMESTAMP,
-            destination VARCHAR(255),
-            success BOOL DEFAULT 0
-        )
-    ''')
+        # create output_messages table
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS output_messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                bot_id INT,
+                message TEXT,
+                created_at TIMESTAMP,
+                destination VARCHAR(255),
+                success BOOL DEFAULT 0
+            )
+        ''')
 
-    # create memory_info table
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS memory_info (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            bot_id INT,
-            info_1 TEXT,
-            info_2 TEXT,
-            info_3 TEXT,
-            info_4 TEXT,
-            info_5 TEXT,
-            info_6 TEXT,
-            info_7 TEXT,
-            info_8 TEXT,
-            info_9 TEXT,
-            info_10 TEXT
-        )
-    ''')
+        # create memory_info table
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS memory_info (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                bot_id INT,
+                info_1 TEXT,
+                info_2 TEXT,
+                info_3 TEXT,
+                info_4 TEXT,
+                info_5 TEXT,
+                info_6 TEXT,
+                info_7 TEXT,
+                info_8 TEXT,
+                info_9 TEXT,
+                info_10 TEXT
+            )
+        ''')
 
-    mysql.connection.commit()
+        mysql.connection.commit()
 
 def generate_prompt(bot, user_text):
     #return bot.system_prompt

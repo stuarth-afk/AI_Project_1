@@ -4,7 +4,6 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import yaml
-import os
 import secrets
 import time
 
@@ -30,7 +29,7 @@ print("Initializing MySQL connection...")
 with app.app_context():
     cur = mysql.connection.cursor()
     print(cur)
-time.sleep(5)  # add a 5 seconds delay
+#time.sleep(5)  # add a 5 seconds delay for debug
 
 #*************************   
 #**  Define Functions   **
@@ -144,11 +143,11 @@ def insert_into_memory_info(bot_id, infos):
         mysql.connection.commit()
 
 # Function to read data from input_messages table
-def read_from_input_messages(bot_id):
+def read_from_input_messages(bot_id, limit=12):
     with app.app_context():
         cur = mysql.connection.cursor()
-        sql = "SELECT * FROM input_messages WHERE bot_id = %s AND used = 0"
-        cur.execute(sql, [bot_id])
+        sql = "SELECT * FROM input_messages WHERE bot_id = %s AND used = 0 ORDER BY created_at DESC LIMIT %s"
+        cur.execute(sql, [bot_id, limit])
         result = cur.fetchall()
         return result
 
@@ -202,11 +201,33 @@ def insert_output_message(bot_id, message, destination):
 
         mysql.connection.commit()
 
+def update_input_messages_used(bot_id):
+    with app.app_context():
+        # Create MySQL cursor
+        cur = mysql.connection.cursor()
+
+        # Update all rows for this bot_id where used = 0, set used to 1
+        cur.execute("UPDATE input_messages SET used = 1 WHERE bot_id = %s AND used = 0", (bot_id,))
+
+        mysql.connection.commit()
+
 def generate_prompt(bot, user_text):
-    #return bot.system_prompt
-    return f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
+    input_messages = read_from_input_messages(bot.id)
+    messages = []
+    if input_messages:
+        for row in input_messages:
+            for i in range(2, 14):  # column indices for message_1 through message_12
+                if row[i] is not None:
+                    messages.append(row[i])
+        # Once we've used the messages, update the `used` field to True.
+        update_input_messages_used(bot.id)
 
+    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
+    for message in messages:
+        prompt += f"\"role\" : \"user\" , \"content\" : \"{message}\" , \n"
+    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
 
+    return prompt
 
 
 #***********************
@@ -331,6 +352,7 @@ def page(number):
     
     if request.method == 'POST':
         user_text = request.form.get('text')
+
         # Add any processing of the user text you want here
         response = openai.Completion.create(
             model=bot.ai_model,       #"text-davinci-003",

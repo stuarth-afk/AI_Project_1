@@ -7,8 +7,10 @@ import yaml
 import os
 import secrets
 
-
+print("Starting the application...")
 app = Flask(__name__)
+print("Initializing Flask application...")
+
 app.secret_key = secrets.token_bytes(16) # <- random key , only used for cookie detection
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -17,13 +19,20 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 #db_config = yaml.load(open('db.yaml'))
 db_config = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
 
+# set up MySQL connection
 app.config['MYSQL_HOST'] = db_config['mysql_host']
 app.config['MYSQL_USER'] = db_config['mysql_user']
 app.config['MYSQL_PASSWORD'] = db_config['mysql_password']
 app.config['MYSQL_DB'] = db_config['mysql_db']
-
 mysql = MySQL(app)
+print("Initializing MySQL connection...")
 
+#*************************   
+#**  Define Functions   **
+#*************************
+
+# create tables
+print("Creating tables...")
 def create_tables_if_not_exist():
     cur = mysql.connection.cursor()
 
@@ -82,10 +91,15 @@ def create_tables_if_not_exist():
 
     mysql.connection.commit()
 
+def generate_prompt(bot, user_text):
+    #return bot.system_prompt
+    return f"{bot.system_prompt}\n{user_text}"
 
-# Additional Bot model fields
+#***********************
+#**  Define Classes   **
+#***********************
+# Global List of Bot model fields for Bot Class
 bot_fields = ['name', 'ai_model', 'system_prompt', 'db_read_script', 'db_write_script', 'reference_data', 'output_destination','number']
-
 
 class Bot:
     def __init__(self, id, name, ai_model, system_prompt, db_read_script, db_write_script, reference_data, output_destination, number):
@@ -116,17 +130,24 @@ class Bot:
 
         return None
 
-@app.got_first_request
-def initialize_database():
-    create_tables_if_not_exist()
+#**********************************
+#**  First Scan Function Calls   **
+#**********************************
+create_tables_if_not_exist()
+
+
+
+#****************************
+#**  Define Flask Routes   **
+#****************************
+# register routes
+print("Registering routes...")
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-####################################
-####           Bot x            ####
-####################################
+# Configure Bot - Flask Route
 @app.route('/submit_config', methods=['POST'])
 def submit_config():
     # print form data for debugging
@@ -178,6 +199,7 @@ def submit_config():
     # Redirect to the page number
     return redirect(url_for('page', number=bot_number))
     
+# Define User Message Action - Flask Route    
 @app.route('/bot/<int:number>', methods=['GET', 'POST'])
 def page(number):
     bot = Bot.get_bot_by_number(number)
@@ -207,9 +229,6 @@ def page(number):
     #return redirect(url_for('page', number=bot.number))
 
 
-def generate_prompt(bot, user_text):
-    #return bot.system_prompt
-    return f"{bot.system_prompt}\n{user_text}"
-
+print("Running the application...")
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

@@ -253,31 +253,10 @@ def read_last_10_from_memory_info(bot_id):
         result = cur.fetchall()
         return result
 
-# Not sure if this works like I want
-def generate_prompt(bot, user_text):
-    memory_info = read_last_10_from_memory_info(bot.id)
-    messages = [row[2] if row[2] else row[3] for row in memory_info]
-
-    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
-    for message in messages:
-        prompt += f"{message} , \n"
-    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
-    
-    print("DEBUG PROMPT : "+ prompt )
-
-    return prompt
-
-
+# This code is commented out because it did not do what I wanted:
 #def generate_prompt(bot, user_text):
-#    input_messages = read_from_input_messages(bot.id)
-#    messages = []
-#    if input_messages:
-#        for row in input_messages:
-#            for i in range(2, 14):  # column indices for message_1 through message_12
-#                if row[i] is not None:
-#                    messages.append(row[i])
-#        # Once we've used the messages, update the `used` field to True.
-#        update_input_messages_used(bot.id)
+#    memory_info = read_last_10_from_memory_info(bot.id)
+#    messages = [row[2] if row[2] else row[3] for row in memory_info]
 #
 #    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
 #    for message in messages:
@@ -285,7 +264,28 @@ def generate_prompt(bot, user_text):
 #    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
 #    
 #    print("DEBUG PROMPT : "+ prompt )
-#    #time.sleep(5)  # add a 5 seconds delay for debug
+#
+#    return prompt
+
+
+def generate_prompt(bot, user_text):
+    input_messages = read_from_input_messages(bot.id)
+    messages = []
+    if input_messages:
+        for row in input_messages:
+            for i in range(2, 14):  # column indices for message_1 through message_12
+                if row[i] is not None:
+                    messages.append(row[i])
+        # Once we've used the messages, update the `used` field to True.
+        update_input_messages_used(bot.id)
+
+    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
+    for message in messages:
+        prompt += f"{message} , \n"
+    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
+    
+    print("DEBUG PROMPT : "+ prompt )
+    #time.sleep(5)  # add a 5 seconds delay for debug
 
     return prompt
 
@@ -429,14 +429,11 @@ def page(number):
         # Update the output_messages table with the bot response
         formatted_user_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n"
         formatted_output_message = response + " , \n"
-        #combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"
         
         db_read_script_bool = bot.db_read_script.lower() == 'true'
         db_write_script_bool = bot.db_write_script.lower() == 'true'
 
         insert_output_message(bot.id, formatted_user_message, formatted_output_message, bot.output_destination, db_read_script_bool, db_write_script_bool)
-        #insert_output_message(bot.id, combined_message, bot.output_destination)
-
 
         # Update the input_messages table for the destination bot
         destination_bot_id = int(bot.output_destination)  # This is the bot id of the destination

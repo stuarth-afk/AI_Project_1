@@ -226,6 +226,9 @@ def generate_prompt(bot, user_text):
     for message in messages:
         prompt += f"\"role\" : \"user\" , \"content\" : \"{message}\" , \n"
     prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
+    
+    print("DEBUG PROMPT : "+ prompt )
+    time.sleep(5)  # add a 5 seconds delay for debug
 
     return prompt
 
@@ -353,6 +356,8 @@ def page(number):
     if request.method == 'POST':
         user_text = request.form.get('text')
 
+
+
         # Add any processing of the user text you want here
         response = openai.Completion.create(
             model=bot.ai_model,       #"text-davinci-003",
@@ -361,8 +366,8 @@ def page(number):
             max_tokens=1000,
         )
         response=response.choices[0].text.strip()
-        print(f"Bot model: {bot.ai_model}")
-        print(f"Bot prompt: {bot.system_prompt}")
+        #print(f"Bot model: {bot.ai_model}")
+        #print(f"Bot prompt: {bot.system_prompt}")
 
         # Update the output_messages table with the combined response
         combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n" + response + " ,\n"

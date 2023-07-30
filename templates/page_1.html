@@ -4,9 +4,9 @@
   <title>AI Bot</title>
 </head>
 <body>
-<h2>Development Bot</h2>
+<h2>AI Bot</h2>
 <a href="{{ url_for('index') }}"><button>Bot Menu</button></a>
-<p>This AI bot is Beta Version 0.1<p>
+<p>Beta Version 0.1<p>
 <form action="{{ url_for('page', number=bot.number) }}" method="post">
   <label for="text">Enter Text:</label><br>
   <textarea id="text" name="text" style="width: 500px; height: 150px;">{{ user_text }}</textarea><br>

@@ -343,7 +343,7 @@ def page(number):
         print(f"Bot prompt: {bot.system_prompt}")
 
         # Update the output_messages table with the combined response
-        combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + ",\n\"role\" : \"assistant\" , \"content\" : \"" + response + "\" , \n"
+        combined_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\n" + response + " ,\n"
         insert_output_message(bot.id, combined_message, bot.output_destination)
 
         # Update the input_messages table for the destination bot

@@ -114,6 +114,10 @@ def insert_into_input_messages(bot_id, messages, source):
         cur.execute(sql, params)
         mysql.connection.commit()
 
+        # After inserting into input_messages, insert into memory_info as well
+        for message in messages:
+            insert_into_memory_info(bot_id, message, "")
+
 # Function to insert data to output_messages table
 def insert_into_output_messages(bot_id, message, destination, success):
     with app.app_context():
@@ -127,6 +131,9 @@ def insert_into_output_messages(bot_id, message, destination, success):
         params = [bot_id, message, destination, success]
         cur.execute(sql, params)
         mysql.connection.commit()
+
+        # After inserting into output_messages, insert into memory_info as well
+        insert_into_memory_info(bot_id, "", message)
 
 # Function to insert data to memory_info table
 def insert_into_memory_info(bot_id, infos):
@@ -211,16 +218,40 @@ def update_input_messages_used(bot_id):
 
         mysql.connection.commit()
 
+# Function to insert data to memory_info table
+def insert_into_memory_info(bot_id, info_1, info_2):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+
+        # Ensure only last 10 messages are stored
+        cur.execute("SELECT COUNT(*) FROM memory_info WHERE bot_id = %s", [bot_id])
+        count = cur.fetchone()[0]
+        if count >= 10:
+            cur.execute("DELETE FROM memory_info WHERE bot_id = %s ORDER BY id ASC LIMIT 1", [bot_id])
+
+        sql = '''
+            INSERT INTO memory_info 
+            (bot_id, info_1, info_2)
+            VALUES 
+            (%s, %s, %s)
+        '''
+        params = [bot_id, info_1, info_2]
+        cur.execute(sql, params)
+        mysql.connection.commit()
+
+# Function to read last 10 data from memory_info table
+def read_last_10_from_memory_info(bot_id):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        sql = "SELECT * FROM memory_info WHERE bot_id = %s ORDER BY id DESC LIMIT 10"
+        cur.execute(sql, [bot_id])
+        result = cur.fetchall()
+        return result
+
+# Not sure if this works like I want
 def generate_prompt(bot, user_text):
-    input_messages = read_from_input_messages(bot.id)
-    messages = []
-    if input_messages:
-        for row in input_messages:
-            for i in range(2, 14):  # column indices for message_1 through message_12
-                if row[i] is not None:
-                    messages.append(row[i])
-        # Once we've used the messages, update the `used` field to True.
-        update_input_messages_used(bot.id)
+    memory_info = read_last_10_from_memory_info(bot.id)
+    messages = [row[2] if row[2] else row[3] for row in memory_info]
 
     prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
     for message in messages:
@@ -228,7 +259,28 @@ def generate_prompt(bot, user_text):
     prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
     
     print("DEBUG PROMPT : "+ prompt )
-    #time.sleep(5)  # add a 5 seconds delay for debug
+
+    return prompt
+
+
+#def generate_prompt(bot, user_text):
+#    input_messages = read_from_input_messages(bot.id)
+#    messages = []
+#    if input_messages:
+#        for row in input_messages:
+#            for i in range(2, 14):  # column indices for message_1 through message_12
+#                if row[i] is not None:
+#                    messages.append(row[i])
+#        # Once we've used the messages, update the `used` field to True.
+#        update_input_messages_used(bot.id)
+#
+#    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
+#    for message in messages:
+#        prompt += f"{message} , \n"
+#    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
+#    
+#    print("DEBUG PROMPT : "+ prompt )
+#    #time.sleep(5)  # add a 5 seconds delay for debug
 
     return prompt
 

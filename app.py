@@ -394,24 +394,41 @@ def page(number):
     user_text = ""
     response = ""
     
-    
     if request.method == 'POST':
         user_text = request.form.get('text')
 
+        # If the user is talking to Bot 1, loop through Bots 2 to 7.
+        if number == 1:
+            for i in range(2, 8):  # loop for Bots 2 to 7
+                temp_bot = Bot.get_bot_by_number(i)
 
+                # Ensure temp_bot is not None before proceeding
+                if temp_bot:
+                    # Process user message with this bot
+                    temp_response = openai.Completion.create(
+                        model=temp_bot.ai_model,
+                        prompt=generate_prompt(temp_bot, user_text),
+                        temperature=0.6,
+                        max_tokens=1000,
+                    ).choices[0].text.strip()
 
-        # Add any processing of the user text you want here
+                    # Assuming you want to update the database tables for these bots as well
+                    formatted_user_message_temp = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n"
+                    formatted_output_message_temp = temp_response + " , \n"
+                    db_read_script_bool_temp = temp_bot.db_read_script.lower() == 'true'
+                    db_write_script_bool_temp = temp_bot.db_write_script.lower() == 'true'
+                    insert_output_message(temp_bot.id, formatted_user_message_temp, formatted_output_message_temp, temp_bot.output_destination, db_read_script_bool_temp, db_write_script_bool_temp)
+                    destination_bot_id_temp = int(temp_bot.output_destination)
+                    update_input_messages(destination_bot_id_temp, formatted_output_message_temp)
+
+        # Now let the original bot (including Bot 1) process the user message
         response = openai.Completion.create(
-            model=bot.ai_model,       #"text-davinci-003",
+            model=bot.ai_model,
             prompt=generate_prompt(bot, user_text),
             temperature=0.6,
             max_tokens=1000,
-        )
-        response=response.choices[0].text.strip()
-        #print(f"Bot model: {bot.ai_model}")
-        #print(f"Bot prompt: {bot.system_prompt}")
+        ).choices[0].text.strip()
 
-        # Update the output_messages table with the bot response
         formatted_user_message = "\n\"role\" : \"user\" , \"content\" : \"" + user_text + "\"\n"
         formatted_output_message = response + " , \n"
         
@@ -421,11 +438,10 @@ def page(number):
         insert_output_message(bot.id, formatted_user_message, formatted_output_message, bot.output_destination, db_read_script_bool, db_write_script_bool)
 
         # Update the input_messages table for the destination bot
-        destination_bot_id = int(bot.output_destination)  # This is the bot id of the destination
+        destination_bot_id = int(bot.output_destination)
         update_input_messages(destination_bot_id, formatted_output_message)
-
     return render_template('page_1.html', bot=bot, user_text=user_text, response=response)
-    #return redirect(url_for('page', number=bot.number))
+    
 
 
 print("Running the application...")

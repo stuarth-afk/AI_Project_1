@@ -253,21 +253,6 @@ def read_last_10_from_memory_info(bot_id):
         result = cur.fetchall()
         return result
 
-# This code is commented out because it did not do what I wanted:
-#def generate_prompt(bot, user_text):
-#    memory_info = read_last_10_from_memory_info(bot.id)
-#    messages = [row[2] if row[2] else row[3] for row in memory_info]
-#
-#    prompt = f"\n\"role\" : \"system\" , \"content\" : \"{bot.system_prompt}\" , \n"
-#    for message in messages:
-#        prompt += f"{message} , \n"
-#    prompt += f"\"role\" : \"user\" , \"content\" : \"{user_text}\" , \n"
-#    
-#    print("DEBUG PROMPT : "+ prompt )
-#
-#    return prompt
-
-
 def generate_prompt(bot, user_text):
     input_messages = read_from_input_messages(bot.id)
     messages = []

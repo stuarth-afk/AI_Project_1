@@ -409,7 +409,7 @@ def page(number):
                         model=temp_bot.ai_model,
                         prompt=generate_prompt(temp_bot, user_text),
                         temperature=0.6,
-                        max_tokens=3000,
+                        max_tokens=3500,
                     ).choices[0].text.strip()
 
                     # Assuming you want to update the database tables for these bots as well
